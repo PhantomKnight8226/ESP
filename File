@@ -121,5 +121,3 @@ RunService:BindToRenderStep("Universal", 500, function()
         end
     end
 end)
-task.wait(10)
-ESPConfiguration.Enabled = false
