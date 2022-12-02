@@ -1,0 +1,125 @@
+ESPConfiguration = {
+    Enabled = false,
+    PlayerInfo = true,
+    Outlines = true,
+    ShowAllyTeam = true,
+    UseTeamColor = false
+}
+
+local Camera = game:GetService("Workspace").CurrentCamera
+local RunService = game:GetService("RunService")
+
+local Players = game:GetService("Players")
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local DrawedPlayers = {}
+
+local Vector2 = Vector2.new
+local RGB = Color3.fromRGB
+
+local function CreateDrawing(object, properties)
+    local Object = Drawing.new(object)
+
+    for i, v in pairs(properties) do
+        Object[i] = v
+    end
+   
+    return Object
+end
+
+local function AddVisuals(player)
+    if DrawedPlayers[player.Name] then return end
+
+    DrawedPlayers[player.Name] = {
+        Player = player,
+        Info = CreateDrawing("Text", {Text = "", Center = true, Outline = true, Size = 18, Transparency = 1, Position = Vector2(0, 0), Color = ESPColour, Visible = false}),
+    }
+end
+
+local function SetVisuals(table, type, value)
+    if type == "Visibility" then
+        for i, v in pairs(table) do
+            if tostring(i) ~= "Player" then
+                v.Visible = value
+            end
+        end
+    end
+end
+
+for i, v in pairs(Players:GetPlayers()) do
+    if v ~= LocalPlayer then
+        AddVisuals(v)
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    AddVisuals(player)
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    for i, v in pairs(DrawedPlayers[player.Name]) do
+        task.wait()
+        v:Remove()
+    end
+    task.wait()
+    DrawedPlayers[player.Name] = nil
+end)
+
+RunService:BindToRenderStep("Universal", 500, function()
+    for i, v in pairs(Players:GetPlayers()) do
+        if v ~= LocalPlayer then
+            local Player = v
+            local DrawedPlayer = DrawedPlayers[Player.Name]
+
+            if DrawedPlayer then
+                local Drawings = {
+                    Info = DrawedPlayer.Info,
+                }
+                if not ESPConfiguration.Enabled then
+                    v:Remove()
+                    repeat
+                        task.wait()
+                    until ESPConfiguration.Enabled
+                    AddVisuals(v)
+                end
+                if Player then
+                    local LocalCharacter = LocalPlayer.Character
+                    local Character = Player.Character
+
+                    if LocalCharacter and Character then
+                        local LocalPlayerHumanoidRootPart = LocalCharacter:FindFirstChild("HumanoidRootPart")
+                        local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+
+                         if LocalPlayerHumanoidRootPart and HumanoidRootPart then
+                            if Player.Character:FindFirstChildOfClass("Humanoid").Health ~= 0 then
+                                local HumanoidRootPartPosition, PlayerOnScreen = Camera:WorldToViewportPoint(HumanoidRootPart.Position)
+    
+                                Drawings.Info.Text = Player.Name .. " (" .. math.round(Player.Character:FindFirstChildOfClass("Humanoid").Health) .. ")"
+                                Drawings.Info.Position = Vector2(HumanoidRootPartPosition.X, (HumanoidRootPartPosition.Y - (6000 / HumanoidRootPartPosition.Z) / 2) - 20)
+                                Drawings.Info.Outline = ESPConfiguration.Outlines
+                                if ESPConfiguration.UseTeamColor then
+                                    DrawedPlayers[Player.Name].Info.Color = Player.TeamColor.Color
+                                else
+                                    DrawedPlayers[Player.Name].Info.Color = Color3.fromRGB(48, 119, 177)
+                                end
+                                Drawings.Info.Visible = ESPConfiguration.PlayerInfo
+                                if not PlayerOnScreen then
+                                    SetVisuals(Drawings, "Visibility", false)
+                                end
+                            else
+                                SetVisuals(Drawings, "Visibility", false)
+                            end
+                        else
+                            SetVisuals(Drawings, "Visibility", false)
+                        end
+                    else
+                        SetVisuals(Drawings, "Visibility", false)
+                    end
+                else
+                    SetVisuals(Drawings, "Visibility", false)
+                end
+            end
+        end
+    end
+end)
+task.wait(10)
+ESPConfiguration.Enabled = false
