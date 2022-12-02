@@ -1,4 +1,4 @@
-ESPConfiguration = {
+local ESPConfiguration = {
     Enabled = false,
     PlayerInfo = true,
     Outlines = true,
