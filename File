@@ -1,6 +1,6 @@
 _G.ESPConfiguration = {
     Enabled = true,
-    Colour = Color3.fromRGB(48, 119, 177)
+    Colour = Color3.fromRGB(48, 119, 177),
     PlayerInfo = true,
     Outlines = true,
     ShowAllyTeam = true,
