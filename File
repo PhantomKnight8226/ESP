@@ -75,42 +75,39 @@ RunService:BindToRenderStep("Universal", 500, function()
                     Info = DrawedPlayer.Info,
                 }
                 if not _G.ESPConfiguration.Enabled then
-                    for i, v in pairs(Players:GetPlayers()) do
-                        if v ~= LocalPlayer then
-                            v:Remove()
-                        end
-                    end
-                    repeat
-                        task.wait()
-                    until _G.ESPConfiguration.Enabled
-                    for i, v in pairs(Players:GetPlayers()) do
-                        if v ~= LocalPlayer then
-                            AddVisuals(v)
-                        end
-                    end
-                end
-                if Player then
-                    local LocalCharacter = LocalPlayer.Character
-                    local Character = Player.Character
-
-                    if LocalCharacter and Character then
-                        local LocalPlayerHumanoidRootPart = LocalCharacter:FindFirstChild("HumanoidRootPart")
-                        local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
-
-                         if LocalPlayerHumanoidRootPart and HumanoidRootPart then
-                            if Player.Character:FindFirstChildOfClass("Humanoid").Health ~= 0 then
-                                local HumanoidRootPartPosition, PlayerOnScreen = Camera:WorldToViewportPoint(HumanoidRootPart.Position)
+                    task.spawn(function()
+                        SetVisuals(Drawings, "Visibility", false)
+                        repeat
+                            task.wait()
+                        until _G.ESPConfiguration.Enabled
+                        SetVisuals(Drawings, "Visibility", true)
+                    end)
+                else
+                    if Player then
+                        local LocalCharacter = LocalPlayer.Character
+                        local Character = Player.Character
     
-                                Drawings.Info.Text = Player.Name .. " (" .. math.round(Player.Character:FindFirstChildOfClass("Humanoid").Health) .. ")"
-                                Drawings.Info.Position = Vector2(HumanoidRootPartPosition.X, (HumanoidRootPartPosition.Y - (6000 / HumanoidRootPartPosition.Z) / 2) - 20)
-                                Drawings.Info.Outline = _G.ESPConfiguration.Outlines
-                                if _G.ESPConfiguration.UseTeamColor then
-                                    DrawedPlayers[Player.Name].Info.Color = Player.TeamColor.Color
+                        if LocalCharacter and Character then
+                            local LocalPlayerHumanoidRootPart = LocalCharacter:FindFirstChild("HumanoidRootPart")
+                            local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
+    
+                             if LocalPlayerHumanoidRootPart and HumanoidRootPart then
+                                if Player.Character:FindFirstChildOfClass("Humanoid").Health ~= 0 then
+                                    local HumanoidRootPartPosition, PlayerOnScreen = Camera:WorldToViewportPoint(HumanoidRootPart.Position)
+        
+                                    Drawings.Info.Text = Player.Name .. " (" .. math.round(Player.Character:FindFirstChildOfClass("Humanoid").Health) .. ")"
+                                    Drawings.Info.Position = Vector2(HumanoidRootPartPosition.X, (HumanoidRootPartPosition.Y - (6000 / HumanoidRootPartPosition.Z) / 2) - 20)
+                                    Drawings.Info.Outline = _G.ESPConfiguration.Outlines
+                                    if _G.ESPConfiguration.UseTeamColor then
+                                        DrawedPlayers[Player.Name].Info.Color = Player.TeamColor.Color
+                                    else
+                                        DrawedPlayers[Player.Name].Info.Color = Color3.fromRGB(48, 119, 177)
+                                    end
+                                    Drawings.Info.Visible = _G.ESPConfiguration.PlayerInfo
+                                    if not PlayerOnScreen then
+                                        SetVisuals(Drawings, "Visibility", false)
+                                    end
                                 else
-                                    DrawedPlayers[Player.Name].Info.Color = Color3.fromRGB(48, 119, 177)
-                                end
-                                Drawings.Info.Visible = _G.ESPConfiguration.PlayerInfo
-                                if not PlayerOnScreen then
                                     SetVisuals(Drawings, "Visibility", false)
                                 end
                             else
@@ -122,8 +119,6 @@ RunService:BindToRenderStep("Universal", 500, function()
                     else
                         SetVisuals(Drawings, "Visibility", false)
                     end
-                else
-                    SetVisuals(Drawings, "Visibility", false)
                 end
             end
         end
