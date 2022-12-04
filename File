@@ -1,5 +1,6 @@
 _G.ESPConfiguration = {
     Enabled = true,
+    Colour = Color3.fromRGB(48, 119, 177)
     PlayerInfo = true,
     Outlines = true,
     ShowAllyTeam = true,
@@ -101,7 +102,7 @@ RunService:BindToRenderStep("Universal", 500, function()
                                     if _G.ESPConfiguration.UseTeamColor then
                                         DrawedPlayers[Player.Name].Info.Color = Player.TeamColor.Color
                                     else
-                                        DrawedPlayers[Player.Name].Info.Color = Color3.fromRGB(48, 119, 177)
+                                        DrawedPlayers[Player.Name].Info.Color = _G.ESPConfiguration.Colour
                                     end
                                     Drawings.Info.Visible = _G.ESPConfiguration.PlayerInfo
                                     if not PlayerOnScreen then
