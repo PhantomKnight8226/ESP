@@ -75,11 +75,19 @@ RunService:BindToRenderStep("Universal", 500, function()
                     Info = DrawedPlayer.Info,
                 }
                 if not _G.ESPConfiguration.Enabled then
-                    v:Remove()
+                    for i, v in pairs(Players:GetPlayers()) do
+                        if v ~= LocalPlayer then
+                            v:Remove()
+                        end
+                    end
                     repeat
                         task.wait()
                     until _G.ESPConfiguration.Enabled
-                    AddVisuals(v)
+                    for i, v in pairs(Players:GetPlayers()) do
+                        if v ~= LocalPlayer then
+                            AddVisuals(v)
+                        end
+                    end
                 end
                 if Player then
                     local LocalCharacter = LocalPlayer.Character
