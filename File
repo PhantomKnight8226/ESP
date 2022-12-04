@@ -1,4 +1,4 @@
-local ESPConfiguration = {
+_G.ESPConfiguration = {
     Enabled = true,
     PlayerInfo = true,
     Outlines = true,
@@ -74,11 +74,11 @@ RunService:BindToRenderStep("Universal", 500, function()
                 local Drawings = {
                     Info = DrawedPlayer.Info,
                 }
-                if not ESPConfiguration.Enabled then
+                if not _G.ESPConfiguration.Enabled then
                     v:Remove()
                     repeat
                         task.wait()
-                    until ESPConfiguration.Enabled
+                    until _G.ESPConfiguration.Enabled
                     AddVisuals(v)
                 end
                 if Player then
@@ -95,13 +95,13 @@ RunService:BindToRenderStep("Universal", 500, function()
     
                                 Drawings.Info.Text = Player.Name .. " (" .. math.round(Player.Character:FindFirstChildOfClass("Humanoid").Health) .. ")"
                                 Drawings.Info.Position = Vector2(HumanoidRootPartPosition.X, (HumanoidRootPartPosition.Y - (6000 / HumanoidRootPartPosition.Z) / 2) - 20)
-                                Drawings.Info.Outline = ESPConfiguration.Outlines
-                                if ESPConfiguration.UseTeamColor then
+                                Drawings.Info.Outline = _G.ESPConfiguration.Outlines
+                                if _G.ESPConfiguration.UseTeamColor then
                                     DrawedPlayers[Player.Name].Info.Color = Player.TeamColor.Color
                                 else
                                     DrawedPlayers[Player.Name].Info.Color = Color3.fromRGB(48, 119, 177)
                                 end
-                                Drawings.Info.Visible = ESPConfiguration.PlayerInfo
+                                Drawings.Info.Visible = _G.ESPConfiguration.PlayerInfo
                                 if not PlayerOnScreen then
                                     SetVisuals(Drawings, "Visibility", false)
                                 end
