@@ -1,5 +1,5 @@
 _G.ESPConfiguration = {
-    Enabled = false,
+    Enabled = true,
     PlayerInfo = true,
     Outlines = true,
     ShowAllyTeam = true,
